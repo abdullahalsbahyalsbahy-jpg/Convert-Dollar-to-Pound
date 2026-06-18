@@ -1,130 +1,118 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta name="description" content="محول عملات بأسعار صرف حقيقية ومباشرة - Currency Converter with Live Exchange Rates">
-    <meta name="theme-color" content="#667eea">
-    <title>محول العملات - Currency Converter</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="محول العملات - أسعار صرف حية ومباشرة" />
+  <meta name="theme-color" content="#4f46e5" />
+  <title>محول العملات</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
-
 <body>
-    <main class="container mt-5">
-        <div class="row">
-            <div class="col-12 col-sm-10 col-md-8 m-auto">
-                <!-- Header -->
-                <header class="text-center mb-5">
-                    <h1 class="display-4 mb-3">💱 محول العملات</h1>
-                    <p class="lead text-muted">Currency Converter with Live Exchange Rates</p>
-                </header>
 
-                <!-- Main Card -->
-                <div class="card shadow-lg border-0">
-                    <div class="card-body p-5">
-                        <form id="converterForm" novalidate>
-                            <!-- From Currency Section -->
-                            <div class="mb-4">
-                                <label for="fromAmount" class="form-label fw-bold mb-3">من العملة (From):</label>
-                                <div class="input-group input-group-lg">
-                                    <input 
-                                        type="number" 
-                                        id="fromAmount" 
-                                        placeholder="أدخل المبلغ" 
-                                        class="form-control" 
-                                        step="0.01" 
-                                        min="0"
-                                        inputmode="decimal"
-                                        aria-label="مبلغ العملة الأصلية">
-                                    <select 
-                                        id="fromCurrency" 
-                                        class="form-select" 
-                                        aria-label="اختر العملة الأصلية">
-                                        <option value="USD">🇺🇸 USD - دولار</option>
-                                        <option value="EGP" selected>🇪🇬 EGP - جنيه مصري</option>
-                                        <option value="EUR">🇪🇺 EUR - يورو</option>
-                                        <option value="SAR">🇸🇦 SAR - ريال سعودي</option>
-                                    </select>
-                                </div>
-                            </div>
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
 
-                            <!-- Swap Button -->
-                            <div class="text-center mb-4">
-                                <button 
-                                    type="button" 
-                                    class="btn btn-outline-primary btn-lg" 
-                                    id="swapBtn" 
-                                    title="تبديل العملات"
-                                    aria-label="تبديل العملات">
-                                    ⇅ تبديل
-                                </button>
-                            </div>
+  <div class="page-wrapper">
 
-                            <!-- To Currency Section -->
-                            <div class="mb-4">
-                                <label for="toAmount" class="form-label fw-bold mb-3">إلى العملة (To):</label>
-                                <div class="input-group input-group-lg">
-                                    <input 
-                                        type="number" 
-                                        id="toAmount" 
-                                        placeholder="سيتم حسابه تلقائياً" 
-                                        class="form-control" 
-                                        readonly
-                                        aria-label="مبلغ العملة المحولة">
-                                    <select 
-                                        id="toCurrency" 
-                                        class="form-select"
-                                        aria-label="اختر العملة المستهدفة">
-                                        <option value="USD" selected>🇺🇸 USD - دولار</option>
-                                        <option value="EGP">🇪🇬 EGP - جنيه مصري</option>
-                                        <option value="EUR">🇪🇺 EUR - يورو</option>
-                                        <option value="SAR">🇸🇦 SAR - ريال سعودي</option>
-                                    </select>
-                                </div>
-                            </div>
+    <header class="site-header">
+      <div class="header-icon">💱</div>
+      <h1 class="site-title">محوّل العملات</h1>
+      <p class="site-subtitle">أسعار صرف حية ومحدّثة لحظة بلحظة</p>
+    </header>
 
-                            <!-- Exchange Rate Info -->
-                            <div class="alert alert-info mb-4" id="rateInfo" role="status" aria-live="polite">
-                                <small id="rateText">جاري جلب أسعار الصرف...</small>
-                            </div>
+    <main class="converter-card">
 
-                            <!-- Convert Button -->
-                            <button 
-                                type="submit" 
-                                class="btn btn-success btn-lg w-100 mb-3" 
-                                id="convertBtn"
-                                aria-label="تحويل العملة">
-                                تحويل الآن
-                            </button>
-                        </form>
+      <div class="rate-bar" id="rateBar">
+        <span class="rate-dot" id="rateDot"></span>
+        <span class="rate-bar-text" id="rateBarText">جاري جلب أسعار الصرف…</span>
+      </div>
 
-                        <!-- Result -->
-                        <div id="result" class="alert alert-success d-none" role="alert" aria-live="assertive">
-                            <h5 id="resultText"></h5>
-                        </div>
-
-                        <!-- Error Message -->
-                        <div id="errorMsg" class="alert alert-danger d-none" role="alert" aria-live="assertive">
-                            <h5 id="errorText"></h5>
-                        </div>
-
-                        <!-- Last Updated -->
-                        <footer class="text-center mt-4">
-                            <small class="text-muted">آخر تحديث: <span id="lastUpdate">جاري التحديث...</span></small>
-                        </footer>
-                    </div>
-                </div>
-            </div>
+      <section class="field-group">
+        <label class="field-label" for="fromAmount">من</label>
+        <div class="field-row">
+          <input type="number" id="fromAmount" class="amount-input"
+            placeholder="0.00" min="0" step="0.01"
+            inputmode="decimal" autocomplete="off"
+            aria-label="المبلغ المراد تحويله" />
+          <div class="currency-select-wrapper">
+            <select id="fromCurrency" class="currency-select" aria-label="العملة الأصلية">
+              <option value="USD">🇺🇸 USD</option>
+              <option value="EGP" selected>🇪🇬 EGP</option>
+              <option value="EUR">🇪🇺 EUR</option>
+              <option value="GBP">🇬🇧 GBP</option>
+              <option value="SAR">🇸🇦 SAR</option>
+              <option value="AED">🇦🇪 AED</option>
+              <option value="KWD">🇰🇼 KWD</option>
+              <option value="TRY">🇹🇷 TRY</option>
+            </select>
+          </div>
         </div>
+        <div class="currency-name" id="fromCurrencyName">جنيه مصري</div>
+      </section>
+
+      <div class="swap-row">
+        <div class="divider-line"></div>
+        <button class="swap-btn" id="swapBtn" aria-label="تبديل العملتين">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 16V4m0 0L3 8m4-4l4 4"/>
+            <path d="M17 8v12m0 0l4-4m-4 4l-4-4"/>
+          </svg>
+        </button>
+        <div class="divider-line"></div>
+      </div>
+
+      <section class="field-group">
+        <label class="field-label" for="toAmount">إلى</label>
+        <div class="field-row">
+          <input type="number" id="toAmount" class="amount-input result-input"
+            placeholder="0.00" readonly
+            aria-label="المبلغ بعد التحويل" />
+          <div class="currency-select-wrapper">
+            <select id="toCurrency" class="currency-select" aria-label="العملة المستهدفة">
+              <option value="USD" selected>🇺🇸 USD</option>
+              <option value="EGP">🇪🇬 EGP</option>
+              <option value="EUR">🇪🇺 EUR</option>
+              <option value="GBP">🇬🇧 GBP</option>
+              <option value="SAR">🇸🇦 SAR</option>
+              <option value="AED">🇦🇪 AED</option>
+              <option value="KWD">🇰🇼 KWD</option>
+              <option value="TRY">🇹🇷 TRY</option>
+            </select>
+          </div>
+        </div>
+        <div class="currency-name" id="toCurrencyName">دولار أمريكي</div>
+      </section>
+
+      <button class="convert-btn" id="convertBtn" type="button">
+        تحويل الآن
+      </button>
+
+      <div class="result-box hidden" id="resultBox" role="status" aria-live="polite">
+        <div class="result-main" id="resultMain"></div>
+        <div class="result-rate" id="resultRate"></div>
+      </div>
+
+      <div class="error-box hidden" id="errorBox" role="alert" aria-live="assertive">
+        <span class="error-icon">⚠️</span>
+        <span id="errorText"></span>
+      </div>
+
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
-    <script src="js/main.js"></script>
-</body>
+    <footer class="site-footer">
+      آخر تحديث: <span id="lastUpdate">—</span>
+      &nbsp;·&nbsp; يتجدد كل 5 دقائق
+    </footer>
 
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
 </html>
