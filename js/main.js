@@ -1,12 +1,5 @@
 'use strict';
 
-const CURRENCY_NAMES = {
-  USD: 'دولار أمريكي', EGP: 'جنيه مصري',
-  EUR: 'يورو',         GBP: 'جنيه إسترليني',
-  SAR: 'ريال سعودي',  AED: 'درهم إماراتي',
-  KWD: 'دينار كويتي', TRY: 'ليرة تركية',
-};
-
 let exchangeRates  = {};
 let isLoadingRates = false;
 let convertTimeout = null;
@@ -14,22 +7,20 @@ let DOM = {};
 
 function cacheDom() {
   DOM = {
-    fromAmount:       document.getElementById('fromAmount'),
-    fromCurrency:     document.getElementById('fromCurrency'),
-    fromCurrencyName: document.getElementById('fromCurrencyName'),
-    toAmount:         document.getElementById('toAmount'),
-    toCurrency:       document.getElementById('toCurrency'),
-    toCurrencyName:   document.getElementById('toCurrencyName'),
-    swapBtn:          document.getElementById('swapBtn'),
-    convertBtn:       document.getElementById('convertBtn'),
-    rateBar:          document.getElementById('rateBar'),
-    rateBarText:      document.getElementById('rateBarText'),
-    resultBox:        document.getElementById('resultBox'),
-    resultMain:       document.getElementById('resultMain'),
-    resultRate:       document.getElementById('resultRate'),
-    errorBox:         document.getElementById('errorBox'),
-    errorText:        document.getElementById('errorText'),
-    lastUpdate:       document.getElementById('lastUpdate'),
+    fromAmount:   document.getElementById('fromAmount'),
+    fromCurrency: document.getElementById('fromCurrency'),
+    toAmount:     document.getElementById('toAmount'),
+    toCurrency:   document.getElementById('toCurrency'),
+    swapBtn:      document.getElementById('swapBtn'),
+    convertBtn:   document.getElementById('convertBtn'),
+    rateBar:      document.getElementById('rateBar'),
+    rateBarText:  document.getElementById('rateBarText'),
+    resultBox:    document.getElementById('resultBox'),
+    resultMain:   document.getElementById('resultMain'),
+    resultRate:   document.getElementById('resultRate'),
+    errorBox:     document.getElementById('errorBox'),
+    errorText:    document.getElementById('errorText'),
+    lastUpdate:   document.getElementById('lastUpdate'),
   };
 }
 
@@ -43,8 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function bindEvents() {
   DOM.convertBtn.addEventListener('click', handleConvert);
   DOM.swapBtn.addEventListener('click', handleSwap);
-  DOM.fromCurrency.addEventListener('change', () => { updateCurrencyLabel('from'); scheduleConvert(); });
-  DOM.toCurrency.addEventListener('change',   () => { updateCurrencyLabel('to');   scheduleConvert(); });
+  DOM.fromCurrency.addEventListener('change', () => scheduleConvert());
+  DOM.toCurrency.addEventListener('change',   () => scheduleConvert());
   DOM.fromAmount.addEventListener('input', scheduleConvert);
   document.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleConvert(); });
   window.addEventListener('online',  () => fetchExchangeRates());
@@ -80,12 +71,6 @@ function setRateBar(state, message) {
   DOM.rateBarText.textContent = message;
 }
 
-function updateCurrencyLabel(side) {
-  const select = side === 'from' ? DOM.fromCurrency : DOM.toCurrency;
-  const label  = side === 'from' ? DOM.fromCurrencyName : DOM.toCurrencyName;
-  label.textContent = CURRENCY_NAMES[select.value] ?? '';
-}
-
 function scheduleConvert() {
   clearTimeout(convertTimeout);
   convertTimeout = setTimeout(handleConvert, 300);
@@ -99,7 +84,7 @@ function handleConvert() {
   const fromAmount = parseFloat(rawValue);
 
   if (rawValue === '' || isNaN(fromAmount)) { DOM.toAmount.value = ''; return; }
-  if (fromAmount < 0)  return showError('الرجاء إدخال رقم موجب');
+  if (fromAmount < 0)   return showError('الرجاء إدخال رقم موجب');
   if (fromAmount === 0) return showError('الرجاء إدخال رقم أكبر من صفر');
   if (Object.keys(exchangeRates).length === 0) return showError('أسعار الصرف لم تُحمَّل بعد');
   if (!exchangeRates[fromCurr] || !exchangeRates[toCurr]) return showError('عملة غير مدعومة');
@@ -123,8 +108,6 @@ function handleSwap() {
   const converted = DOM.toAmount.value;
   if (converted) DOM.fromAmount.value = parseFloat(converted).toFixed(2);
   DOM.toAmount.value = '';
-  updateCurrencyLabel('from');
-  updateCurrencyLabel('to');
   clearMessages();
   handleConvert();
 }
